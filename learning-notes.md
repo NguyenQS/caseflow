@@ -72,3 +72,31 @@ GET /api/cases/999
 → CaseNotFoundException
 → GlobalExceptionHandler
 → HTTP 404
+
+## Persistenz mit PostgreSQL und JPA
+
+Die bisherige In-Memory-Speicherung wurde durch PostgreSQL ersetzt.
+
+Der Zugriff auf die Datenbank erfolgt über Spring Data JPA.
+`Case` ist jetzt eine JPA-Entity und wird einer Datenbanktabelle zugeordnet.
+
+Wichtige Bestandteile:
+
+- `@Entity` markiert die Klasse als persistierbare JPA-Entity.
+- `@Id` kennzeichnet den Primärschlüssel.
+- `@GeneratedValue` überlässt die ID-Erzeugung der Datenbank.
+- `@Enumerated(EnumType.STRING)` speichert den Status als lesbaren String.
+- `CaseRepository` erweitert `JpaRepository<Case, Long>` und stellt dadurch
+  Methoden wie `findAll()`, `findById()` und `save()` bereit.
+
+Der Ablauf beim Speichern ist nun:
+
+POST /api/cases
+→ CaseController
+→ CaseService
+→ CaseRepository
+→ Hibernate/JPA
+→ PostgreSQL
+
+Nach einem Neustart der Spring-Boot-Anwendung bleiben die Daten erhalten.
+Damit ist die Speicherung jetzt persistent.
