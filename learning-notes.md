@@ -100,3 +100,28 @@ POST /api/cases
 
 Nach einem Neustart der Spring-Boot-Anwendung bleiben die Daten erhalten.
 Damit ist die Speicherung jetzt persistent.
+
+## Request-Validierung
+
+Eingehende POST-Anfragen werden mit Bean Validation geprüft.
+
+`CreateCaseRequest` verwendet dafür unter anderem:
+
+- `@NotBlank` für Pflichtfelder
+- `@Size` für maximale Feldlängen
+
+Im Controller aktiviert `@Valid` die Prüfung des Request-DTOs.
+
+Ungültige Requests werden abgefangen, bevor der Service aufgerufen wird.
+
+Ein eigener Handler für `MethodArgumentNotValidException` erzeugt eine
+strukturierte HTTP-400-Antwort mit den konkreten Feldfehlern.
+
+Beispiel:
+
+{
+  "error": "Validation failed",
+  "errors": {
+    "title": "Title must not be blank"
+  }
+}

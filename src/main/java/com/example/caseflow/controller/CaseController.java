@@ -4,6 +4,7 @@ import com.example.caseflow.dto.CreateCaseRequest;
 import com.example.caseflow.model.Case;
 import com.example.caseflow.service.CaseService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CaseController {
     }
 
     @PostMapping
-    public Case createCase(@RequestBody CreateCaseRequest request) {
+    public Case createCase(@Valid @RequestBody CreateCaseRequest request) {
         return caseService.createCase(request);
     }
 }
