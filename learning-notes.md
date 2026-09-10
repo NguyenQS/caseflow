@@ -125,3 +125,33 @@ Beispiel:
     "title": "Title must not be blank"
   }
 }
+
+## Unit Tests mit JUnit und Mockito
+
+Der `CaseService` wird mit Unit Tests getestet.
+
+Dabei wird das echte `CaseRepository` durch ein Mockito-Mock ersetzt.
+So kann die Service-Logik isoliert getestet werden, ohne dass PostgreSQL
+oder JPA für diese Tests benötigt werden.
+
+Beispiele:
+
+- `findAll()` liefert erwartete Cases zurück.
+- `findById()` liefert einen vorhandenen Case.
+- Bei einer unbekannten ID wird eine `CaseNotFoundException` erwartet.
+- Beim Erstellen eines Cases wird geprüft, ob `save()` auf dem Repository
+  tatsächlich aufgerufen wurde.
+
+Verwendete Konzepte:
+
+- `@Test` definiert einen Testfall.
+- `@BeforeEach` bereitet vor jedem Test eine neue Testumgebung vor.
+- `mock()` erzeugt eine kontrollierbare Test-Implementierung.
+- `when(...).thenReturn(...)` definiert das Verhalten des Mocks.
+- `assertEquals()` prüft erwartete Werte.
+- `assertThrows()` prüft erwartete Exceptions.
+- `verify()` prüft, ob eine Methode auf einer Abhängigkeit aufgerufen wurde.
+
+Aktueller Stand:
+
+5 Tests ausgeführt, 0 Fehler, Build erfolgreich.
