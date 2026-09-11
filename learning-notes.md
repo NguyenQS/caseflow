@@ -173,3 +173,21 @@ Dieser Ablauf wird zusätzlich durch einen Unit Test geprüft:
 - vorhandener Case wird über das Repository gefunden
 - Status wird von `OPEN` auf `IN_PROGRESS` geändert
 - der veränderte Case wird über `save()` gespeichert
+
+## Controller-Tests mit MockMvc
+
+Zusätzlich zu den Service-Unit-Tests wird auch die Web-Schicht getestet.
+
+Mit `MockMvc` können HTTP-Anfragen innerhalb des Spring-Testkontexts
+simuliert werden, ohne einen echten Server auf Port 8080 zu starten.
+
+Dabei wird der echte `CaseController` verwendet, während der `CaseService`
+durch ein Mockito-Mock ersetzt wird.
+
+Getestet werden aktuell:
+
+- `GET /api/cases` liefert HTTP 200 und eine JSON-Liste.
+- Ein `POST /api/cases` mit leerem Titel wird durch die Validierung
+  abgefangen und liefert HTTP 400.
+
+Dadurch werden Service-Logik und Web-Schicht getrennt getestet.
