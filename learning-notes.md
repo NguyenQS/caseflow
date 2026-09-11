@@ -191,3 +191,26 @@ Getestet werden aktuell:
   abgefangen und liefert HTTP 400.
 
 Dadurch werden Service-Logik und Web-Schicht getrennt getestet.
+
+## Continuous Integration mit GitHub Actions
+
+Für das Repository wurde ein GitHub-Actions-Workflow eingerichtet.
+
+Bei jedem Push auf `main` und bei Pull Requests werden die Maven-Tests
+automatisch auf einem frischen Ubuntu-Runner ausgeführt.
+
+Da ein Spring-Kontexttest eine PostgreSQL-Verbindung benötigt, wird in der
+CI zusätzlich ein PostgreSQL-Service-Container gestartet.
+
+Der Ablauf ist:
+
+Push / Pull Request
+→ GitHub Actions
+→ Java 17 einrichten
+→ PostgreSQL starten
+→ `./mvnw test`
+→ Build erfolgreich oder fehlgeschlagen
+
+Dabei ist aufgefallen, dass der Maven Wrapper unter Linux ausführbar sein
+muss und dass externe Abhängigkeiten wie eine Datenbank auch in der
+CI-Umgebung bereitgestellt werden müssen.
