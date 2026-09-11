@@ -91,4 +91,32 @@ class CaseServiceTest {
         assertEquals("Insurance document", result.getTitle());
         verify(caseRepository).save(any(Case.class));
     }
+
+    @Test
+    void updateStatus_shouldChangeAndSaveStatus() {
+        Case existingCase = new Case(
+                "Address change",
+                "Customer reported a new address",
+                com.example.caseflow.model.CaseStatus.OPEN,
+                java.time.LocalDateTime.now()
+        );
+
+        when(caseRepository.findById(1L))
+                .thenReturn(Optional.of(existingCase));
+
+        when(caseRepository.save(existingCase))
+                .thenReturn(existingCase);
+
+        Case result = caseService.updateStatus(
+                1L,
+                com.example.caseflow.model.CaseStatus.IN_PROGRESS
+        );
+
+        assertEquals(
+                com.example.caseflow.model.CaseStatus.IN_PROGRESS,
+                result.getStatus()
+        );
+
+        verify(caseRepository).save(existingCase);
+    }
 }

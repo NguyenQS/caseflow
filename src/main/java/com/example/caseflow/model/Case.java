@@ -49,4 +49,8 @@ public class Case {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public void setStatus(CaseStatus status) {
+        this.status = status;
+    }
 }

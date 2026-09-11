@@ -5,6 +5,7 @@ import com.example.caseflow.model.Case;
 import com.example.caseflow.service.CaseService;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import com.example.caseflow.dto.UpdateCaseStatusRequest;
 
 import java.util.List;
 
@@ -31,5 +32,13 @@ public class CaseController {
     @PostMapping
     public Case createCase(@Valid @RequestBody CreateCaseRequest request) {
         return caseService.createCase(request);
+    }
+
+    @PatchMapping("/{id}/status")
+    public Case updateStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCaseStatusRequest request) {
+
+        return caseService.updateStatus(id, request.getStatus());
     }
 }

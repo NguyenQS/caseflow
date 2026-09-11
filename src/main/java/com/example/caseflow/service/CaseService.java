@@ -38,4 +38,13 @@ public class CaseService {
 
         return caseRepository.save(newCase);
     }
+
+    public Case updateStatus(Long id, CaseStatus status) {
+        Case existingCase = caseRepository.findById(id)
+                .orElseThrow(() -> new CaseNotFoundException(id));
+
+        existingCase.setStatus(status);
+
+        return caseRepository.save(existingCase);
+    }
 }

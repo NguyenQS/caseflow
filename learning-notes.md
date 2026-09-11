@@ -155,3 +155,21 @@ Verwendete Konzepte:
 Aktueller Stand:
 
 5 Tests ausgeführt, 0 Fehler, Build erfolgreich.
+
+## Statusänderung eines Cases
+
+Über `PATCH /api/cases/{id}/status` kann der Status eines bestehenden Cases
+gezielt geändert werden.
+
+Dafür wird ein eigenes `UpdateCaseStatusRequest`-DTO verwendet. So kann der
+Client nur den Status ändern und nicht gleichzeitig andere Felder wie ID,
+Titel oder Erstellungszeitpunkt überschreiben.
+
+Der Service lädt den vorhandenen Case über das Repository, ändert den Status
+und speichert die Entity erneut.
+
+Dieser Ablauf wird zusätzlich durch einen Unit Test geprüft:
+
+- vorhandener Case wird über das Repository gefunden
+- Status wird von `OPEN` auf `IN_PROGRESS` geändert
+- der veränderte Case wird über `save()` gespeichert
