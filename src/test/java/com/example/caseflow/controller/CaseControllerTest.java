@@ -8,6 +8,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,8 +27,10 @@ class CaseControllerTest {
 
     @Test
     void getCases_shouldReturnOk() throws Exception {
-        when(caseService.getAllCases())
-                .thenReturn(List.of());
+        when(caseService.getCases(
+                Optional.empty(),
+                Optional.empty()
+        )).thenReturn(List.of());
 
         mockMvc.perform(get("/api/cases"))
                 .andExpect(status().isOk())

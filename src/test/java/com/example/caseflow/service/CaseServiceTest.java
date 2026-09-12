@@ -36,7 +36,10 @@ class CaseServiceTest {
         when(caseRepository.findAll())
                 .thenReturn(List.of(firstCase));
 
-        List<Case> result = caseService.getAllCases();
+        List<Case> result = caseService.getCases(
+                Optional.empty(),
+                Optional.empty()
+        );
 
         assertEquals(1, result.size());
         assertEquals("Address change", result.get(0).getTitle());
