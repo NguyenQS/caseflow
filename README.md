@@ -19,6 +19,7 @@ anzuwenden.
 - Mockito
 - MockMvc
 - Git
+- GitHub Actions (CI)
 
 ## Architektur
 
@@ -145,5 +146,4 @@ und Tests befinden sich in:
 - Integrationstests mit Testcontainers
 - Datenbankmigrationen mit Flyway
 - Logging
-- GitHub Actions
 - zusätzliche Filter- und Suchfunktionen

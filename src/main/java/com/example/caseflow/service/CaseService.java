@@ -6,6 +6,9 @@ import com.example.caseflow.model.Case;
 import com.example.caseflow.model.CaseStatus;
 import com.example.caseflow.repository.CaseRepository;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+import java.util.Comparator;
+import java.util.Optional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,8 +22,34 @@ public class CaseService {
         this.caseRepository = caseRepository;
     }
 
-    public List<Case> getAllCases() {
-        return caseRepository.findAll();
+    public List<Case> getCases(
+            Optional<CaseStatus> status,
+            Optional<String> sort) {
+
+        List<Case> cases = status
+                .map(caseRepository::findByStatus)
+                .orElseGet(caseRepository::findAll);
+
+        if (sort.isPresent()) {
+            String sortValue = sort.get();
+
+            if (sortValue.equals("createdAt")) {
+                return cases.stream()
+                        .sorted(Comparator.comparing(Case::getCreatedAt))
+                        .toList();
+            }
+
+            if (sortValue.equals("createdAt,desc")) {
+                return cases.stream()
+                        .sorted(
+                                Comparator.comparing(Case::getCreatedAt)
+                                        .reversed()
+                        )
+                        .toList();
+            }
+        }
+
+        return cases;
     }
 
     public Case getCaseById(Long id) {

@@ -409,3 +409,45 @@ Als nächste sinnvolle Erweiterungen sehe ich unter anderem:
 - Logging
 - Filter- und Suchfunktionen
 - zusätzliche fachliche Regeln für Statusübergänge
+
+## Derived Queries mit Spring Data JPA
+
+Die Statusfilterung wurde zunächst in Java mit `stream().filter(...)`
+umgesetzt.
+
+Dabei wurden alle Cases aus PostgreSQL geladen und erst anschließend in Java
+gefiltert.
+
+Anschließend wurde die Filterung in das Repository verlagert:
+
+```java
+List<Case> findByStatus(CaseStatus status);
+```
+
+Spring Data JPA kann aus diesem Methodennamen automatisch eine Query ableiten.
+
+Das Muster ist dabei vereinfacht:
+
+`findBy` + Property
+
+Da `Case` ein Feld `status` besitzt, wird aus `findByStatus(...)` sinngemäß:
+
+```sql
+SELECT *
+FROM cases
+WHERE status = ?
+```
+
+Im Service wird die Methode über eine Method Reference verwendet:
+
+```java
+status
+    .map(caseRepository::findByStatus)
+    .orElseGet(caseRepository::findAll);
+```
+
+Wenn ein Status vorhanden ist, führt das Repository die gefilterte
+Datenbankabfrage aus. Ohne Status werden alle Cases geladen.
+
+Dadurch bleibt das API-Verhalten gleich, aber die Filterung findet nicht mehr
+erst nach dem Laden aller Datensätze in Java statt.
