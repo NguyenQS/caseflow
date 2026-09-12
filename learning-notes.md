@@ -451,3 +451,17 @@ Datenbankabfrage aus. Ohne Status werden alle Cases geladen.
 
 Dadurch bleibt das API-Verhalten gleich, aber die Filterung findet nicht mehr
 erst nach dem Laden aller Datensätze in Java statt.
+
+## Refactoring und Tests
+
+Beim Umbau von `getAllCases()` auf eine allgemeinere `getCases(...)`-Methode
+blieb das Verhalten der REST-API nach außen unverändert.
+
+Zwei Tests verwendeten intern aber noch die alte Service-Methode und schlugen
+dadurch fehl.
+
+Dadurch wurde für mich konkret sichtbar, dass Refactoring nicht nur
+Produktionscode betrifft: Wenn sich interne Schnittstellen ändern, müssen auch
+abhängige Tests angepasst werden.
+
+Nach der Anpassung liefen wieder alle 8 Tests erfolgreich durch.
