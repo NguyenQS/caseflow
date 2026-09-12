@@ -7,6 +7,7 @@ import com.example.caseflow.repository.CaseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +34,8 @@ class CaseServiceTest {
                 java.time.LocalDateTime.now()
         );
 
-        when(caseRepository.findAll())
-                .thenReturn(List.of(firstCase));
+        when(caseRepository.findAll(any(Sort.class)))
+            .thenReturn(List.of(firstCase));
 
         List<Case> result = caseService.getCases(
                 Optional.empty(),
