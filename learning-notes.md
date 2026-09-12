@@ -465,3 +465,26 @@ Produktionscode betrifft: Wenn sich interne Schnittstellen ändern, müssen auch
 abhängige Tests angepasst werden.
 
 Nach der Anpassung liefen wieder alle 8 Tests erfolgreich durch.
+
+## Sortierung über Spring Data
+
+Die Sortierung wurde zunächst mit Java Streams nach dem Laden der Cases
+durchgeführt.
+
+Anschließend wurde sie auf Spring Data `Sort` umgestellt.
+
+Der Service übersetzt den Query-Parameter in ein `Sort`-Objekt, zum Beispiel:
+
+`Sort.by("createdAt").descending()`
+
+Dieses Objekt wird an das Repository weitergegeben. Dadurch kann die
+Sortierung bereits in der Datenbank erfolgen.
+
+Beispiele:
+
+- `?sort=createdAt` → aufsteigend
+- `?sort=createdAt,desc` → absteigend
+- Kombination mit `?status=OPEN`
+
+Damit finden Filterung und Sortierung näher an der Datenquelle statt,
+während das äußere API-Verhalten gleich bleibt.

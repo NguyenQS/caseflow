@@ -5,13 +5,12 @@ import com.example.caseflow.exception.CaseNotFoundException;
 import com.example.caseflow.model.Case;
 import com.example.caseflow.model.CaseStatus;
 import com.example.caseflow.repository.CaseRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.Comparator;
-import java.util.Optional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CaseService {
@@ -26,30 +25,15 @@ public class CaseService {
             Optional<CaseStatus> status,
             Optional<String> sort) {
 
-        List<Case> cases = status
-                .map(caseRepository::findByStatus)
-                .orElseGet(caseRepository::findAll);
+        Sort sorting = parseSort(sort);
 
-        if (sort.isPresent()) {
-            String sortValue = sort.get();
-
-            if (sortValue.equals("createdAt")) {
-                return cases.stream()
-                        .sorted(Comparator.comparing(Case::getCreatedAt))
-                        .toList();
-            }
-
-            if (sortValue.equals("createdAt,desc")) {
-                return cases.stream()
-                        .sorted(
-                                Comparator.comparing(Case::getCreatedAt)
-                                        .reversed()
-                        )
-                        .toList();
-            }
-        }
-
-        return cases;
+        return status
+                .map(selectedStatus ->
+                        caseRepository.findByStatus(selectedStatus, sorting)
+                )
+                .orElseGet(() ->
+                        caseRepository.findAll(sorting)
+                );
     }
 
     public Case getCaseById(Long id) {
@@ -75,5 +59,22 @@ public class CaseService {
         existingCase.setStatus(status);
 
         return caseRepository.save(existingCase);
+    }
+
+    private Sort parseSort(Optional<String> sort) {
+
+        if (sort.isEmpty()) {
+            return Sort.unsorted();
+        }
+
+        if (sort.get().equals("createdAt")) {
+            return Sort.by("createdAt").ascending();
+        }
+
+        if (sort.get().equals("createdAt,desc")) {
+            return Sort.by("createdAt").descending();
+        }
+
+        return Sort.unsorted();
     }
 }
