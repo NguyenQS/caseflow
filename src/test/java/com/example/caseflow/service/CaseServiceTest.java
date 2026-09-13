@@ -6,6 +6,11 @@ import com.example.caseflow.model.Case;
 import com.example.caseflow.repository.CaseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import com.example.caseflow.model.CaseStatus;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Sort;
 import java.util.List;
@@ -27,23 +32,25 @@ class CaseServiceTest {
 
     @Test
     void getAllCases_shouldReturnCasesFromRepository() {
-        Case firstCase = new Case(
-                "Address change",
-                "Customer reported a new address",
-                com.example.caseflow.model.CaseStatus.OPEN,
-                java.time.LocalDateTime.now()
+            Case firstCase = new Case(
+                "Test case",
+                "Test description",
+                CaseStatus.OPEN,
+                LocalDateTime.now()
         );
 
-        when(caseRepository.findAll(any(Sort.class)))
-            .thenReturn(List.of(firstCase));
+        when(caseRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(firstCase)));
 
-        List<Case> result = caseService.getCases(
+        Page<Case> result = caseService.getCases(
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                0,
+                10
         );
 
-        assertEquals(1, result.size());
-        assertEquals("Address change", result.get(0).getTitle());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(firstCase, result.getContent().get(0));
     }
 
     @Test

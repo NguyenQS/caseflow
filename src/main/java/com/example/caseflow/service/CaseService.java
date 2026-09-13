@@ -5,11 +5,13 @@ import com.example.caseflow.exception.CaseNotFoundException;
 import com.example.caseflow.model.Case;
 import com.example.caseflow.model.CaseStatus;
 import com.example.caseflow.repository.CaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,18 +23,26 @@ public class CaseService {
         this.caseRepository = caseRepository;
     }
 
-    public List<Case> getCases(
+    public Page<Case> getCases(
             Optional<CaseStatus> status,
-            Optional<String> sort) {
+            Optional<String> sort,
+            int page,
+            int size) {
 
         Sort sorting = parseSort(sort);
 
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                sorting
+        );
+
         return status
                 .map(selectedStatus ->
-                        caseRepository.findByStatus(selectedStatus, sorting)
+                        caseRepository.findByStatus(selectedStatus, pageable)
                 )
                 .orElseGet(() ->
-                        caseRepository.findAll(sorting)
+                        caseRepository.findAll(pageable)
                 );
     }
 

@@ -488,3 +488,36 @@ Beispiele:
 
 Damit finden Filterung und Sortierung näher an der Datenquelle statt,
 während das äußere API-Verhalten gleich bleibt.
+
+## Pagination mit Spring Data
+
+Die API wurde um Pagination erweitert.
+
+Über Query-Parameter können nun Seite und Seitengröße angegeben werden:
+
+`GET /api/cases?page=0&size=10`
+
+Im Controller werden `page` und `size` an den Service weitergegeben.
+
+Der Service erzeugt daraus ein `Pageable`:
+
+`PageRequest.of(page, size, sorting)`
+
+Das Repository gibt anschließend keine einfache `List<Case>` mehr zurück,
+sondern eine `Page<Case>`.
+
+Eine `Page` enthält neben den eigentlichen Datensätzen zusätzliche
+Informationen, zum Beispiel:
+
+- aktuelle Seitennummer
+- Seitengröße
+- Anzahl der Elemente auf der Seite
+- Gesamtzahl aller Elemente
+- Gesamtzahl der Seiten
+- Information, ob es die erste oder letzte Seite ist
+
+Dadurch müssen bei größeren Datenmengen nicht alle Datensätze auf einmal
+geladen werden.
+
+Die Sortierung kann dabei direkt Bestandteil des `Pageable` sein und wird
+zusammen mit der Pagination an die Datenbank weitergegeben.

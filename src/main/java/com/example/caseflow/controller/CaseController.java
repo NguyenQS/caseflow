@@ -6,9 +6,9 @@ import com.example.caseflow.model.Case;
 import com.example.caseflow.model.CaseStatus;
 import com.example.caseflow.service.CaseService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,11 +22,13 @@ public class CaseController {
     }
 
     @GetMapping
-    public List<Case> getCases(
+    public Page<Case> getCases(
             @RequestParam(required = false) Optional<CaseStatus> status,
-            @RequestParam(required = false) Optional<String> sort) {
+            @RequestParam(required = false) Optional<String> sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        return caseService.getCases(status, sort);
+        return caseService.getCases(status, sort, page, size);
     }
 
     @GetMapping("/{id}")
