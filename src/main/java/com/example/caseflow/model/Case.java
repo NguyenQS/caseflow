@@ -2,6 +2,8 @@ package com.example.caseflow.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cases")
@@ -19,6 +21,9 @@ public class Case {
     private CaseStatus status;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "caseEntity")
+    private List<Comment> comments = new ArrayList<>();
 
     protected Case() {
     }
@@ -52,5 +57,9 @@ public class Case {
 
     public void setStatus(CaseStatus status) {
         this.status = status;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 }

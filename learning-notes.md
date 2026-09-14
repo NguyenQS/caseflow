@@ -521,3 +521,79 @@ geladen werden.
 
 Die Sortierung kann dabei direkt Bestandteil des `Pageable` sein und wird
 zusammen mit der Pagination an die Datenbank weitergegeben.
+
+## JPA-Beziehung zwischen Case und Comment
+
+Das Projekt wurde um eine zweite Entity `Comment` erweitert.
+
+Ein Comment gehört genau zu einem Case:
+
+`@ManyToOne`
+
+`@JoinColumn(name = "case_id", nullable = false)`
+
+Die Spalte `comments.case_id` ist dabei ein Foreign Key auf `cases.id`.
+
+Dadurch kann die Datenbank speichern, zu welchem Case ein Comment gehört.
+
+Auf der Gegenseite kennt ein Case seine Comments:
+
+`@OneToMany(mappedBy = "caseEntity")`
+
+`List<Comment> comments`
+
+`mappedBy = "caseEntity"` bedeutet, dass die Beziehung über das Feld
+`caseEntity` in `Comment` verwaltet wird.
+
+Der Foreign Key bleibt damit in der Tabelle `comments`.
+
+Zum Erstellen eines Comments wird wieder ein eigenes DTO verwendet:
+
+`CreateCommentRequest`
+
+Der Client liefert nur den eigentlichen Text.
+
+ID, Erstellungszeitpunkt und die Zuordnung zum Case werden von der Anwendung
+gesetzt.
+
+Der Ablauf beim Erstellen ist:
+
+POST `/api/cases/{caseId}/comments`
+
+→ Controller liest `caseId` aus dem Pfad
+
+→ JSON-Body wird in `CreateCommentRequest` umgewandelt
+
+→ Service lädt den zugehörigen Case
+
+→ neues `Comment`-Objekt wird erzeugt
+
+→ `CommentRepository.save(...)`
+
+→ Hibernate speichert die Beziehung über `case_id`
+
+Zum Lesen der Comments wird eine Derived Query verwendet:
+
+`List<Comment> findByCaseEntityId(Long caseId);`
+
+Dadurch werden nur die Comments geladen, die zum angegebenen Case gehören.
+
+Beim ersten Laufzeit-Test mit der bidirektionalen Beziehung entstand eine
+rekursive JSON-Ausgabe:
+
+Comment
+
+→ Case
+
+→ Comments
+
+→ Comment
+
+→ Case
+
+→ ...
+
+Dadurch wurde sichtbar, dass eine sinnvolle JPA-Beziehung nicht automatisch
+auch eine sinnvolle JSON-Repräsentation ist.
+
+Dieses Serialisierungsproblem wird im nächsten Schritt gezielt gelöst.
