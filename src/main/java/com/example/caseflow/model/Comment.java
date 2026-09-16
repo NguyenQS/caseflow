@@ -18,7 +18,7 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "case_id", nullable = false)
     private Case caseEntity;
 

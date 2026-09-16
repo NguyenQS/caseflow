@@ -8,6 +8,7 @@ import com.example.caseflow.repository.CaseRepository;
 import com.example.caseflow.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
+    @Transactional
     public Comment createComment(Long caseId, CreateCommentRequest request) {
 
         Case caseEntity = caseRepository.findById(caseId)
@@ -39,6 +41,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsForCase(Long caseId) {
 
         if (!caseRepository.existsById(caseId)) {

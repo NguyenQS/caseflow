@@ -597,3 +597,35 @@ Dadurch wurde sichtbar, dass eine sinnvolle JPA-Beziehung nicht automatisch
 auch eine sinnvolle JSON-Repräsentation ist.
 
 Dieses Serialisierungsproblem wird im nächsten Schritt gezielt gelöst.
+
+## Tests für Comments
+
+Für den neuen Comment-Bereich wurden Service- und Controller-Tests ergänzt.
+
+Im `CommentServiceTest` werden unter anderem geprüft:
+
+- erfolgreicher Comment für einen vorhandenen Case
+- Fehler bei unbekannter Case-ID
+- kein Speichern bei ungültigem Case
+- Laden der Comments über die passende Repository-Methode
+
+Dabei werden `CaseRepository` und `CommentRepository` mit Mockito gemockt.
+
+Im `CommentControllerTest` wird dagegen die Web-Schicht getestet.
+
+Geprüft werden unter anderem:
+
+- `POST /api/cases/{caseId}/comments`
+- Übergabe der `caseId` über `@PathVariable`
+- JSON-Request über `@RequestBody`
+- Validierung bei leerem Comment-Text
+- `GET /api/cases/{caseId}/comments`
+- JSON-Struktur der Response
+
+Der `CommentService` ist dabei gemockt. Dadurch wird gezielt der Controller getestet, nicht die Datenbank- oder Service-Logik.
+
+Ein Stub legt dabei fest, was ein Mock bei einem bestimmten Methodenaufruf zurückgeben soll.
+
+Aktueller Stand:
+
+14 Tests, 0 Fehler.
