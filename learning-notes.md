@@ -629,3 +629,39 @@ Ein Stub legt dabei fest, was ein Mock bei einem bestimmten Methodenaufruf zurü
 Aktueller Stand:
 
 14 Tests, 0 Fehler.
+
+## Integrationstest mit Testcontainers
+
+Zusätzlich zu Unit- und Controller-Tests wurde ein Integrationstest mit
+Testcontainers ergänzt.
+
+Dabei startet für den Test automatisch eine echte PostgreSQL-Instanz in einem
+Docker-Container.
+
+Der Test speichert:
+
+- einen Case
+- einen zugehörigen Comment
+
+und liest den Comment anschließend über:
+
+`findByCaseEntityId(...)`
+
+wieder aus der Datenbank.
+
+Damit werden nicht nur gemockte Repository-Aufrufe getestet, sondern das
+Zusammenspiel von:
+
+- Spring Data JPA
+- Hibernate
+- Entity-Mapping
+- Foreign Key
+- Derived Query
+- PostgreSQL
+
+Der Testcontainer wird nur für den Test verwendet und ist von der normalen
+lokalen Datenbank getrennt.
+
+Aktueller Stand:
+
+15 Tests, 0 Fehler.
