@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,6 +21,7 @@ import java.util.Optional;
 public class CaseService {
 
     private final CaseRepository caseRepository;
+    private static final Logger log = LoggerFactory.getLogger(CaseService.class);
 
     public CaseService(CaseRepository caseRepository) {
         this.caseRepository = caseRepository;
@@ -47,8 +51,13 @@ public class CaseService {
     }
 
     public Case getCaseById(Long id) {
+        log.debug("Loading case id={}", id);
+
         return caseRepository.findById(id)
-                .orElseThrow(() -> new CaseNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Case not found: id={}", id);
+                    return new CaseNotFoundException(id);
+                });
     }
 
     public Case createCase(CreateCaseRequest request) {
@@ -59,6 +68,7 @@ public class CaseService {
                 LocalDateTime.now()
         );
 
+        log.info("Creating new case with title='{}'", request.getTitle());
         return caseRepository.save(newCase);
     }
 
@@ -68,6 +78,7 @@ public class CaseService {
 
         existingCase.setStatus(status);
 
+        log.info("Updating case id={} to status={}", id, status);
         return caseRepository.save(existingCase);
     }
 

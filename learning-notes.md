@@ -728,3 +728,32 @@ nachträglich geändert werden sollten.
 
 Statt `V1` umzuschreiben, wird jede weitere Schemaänderung als neue
 Migration ergänzt.
+
+## Logging, Profiles und Spring-Grundlagen
+
+Für die Fehlersuche wurde SLF4J-Logging im Service ergänzt.
+
+Beispiele:
+- `DEBUG` für detaillierte Abläufe, z. B. Laden eines Cases
+- `INFO` für normale wichtige Vorgänge, z. B. Erstellen eines Cases
+- `WARN` für ungewöhnliche Situationen, z. B. nicht gefundene Case-ID
+
+Im Unterschied zum Debugger helfen Logs besonders bei Fehlern, die bereits passiert sind oder sich in Produktion nicht leicht reproduzieren lassen.
+
+Für die lokale Entwicklung wurde ein `dev`-Profil eingeführt:
+- DEBUG-Logging aktiviert
+- SQL-Ausgaben aktiviert
+
+Über Spring Profiles kann derselbe Java-Code mit unterschiedlicher Konfiguration für z. B. `dev`, `test` oder `prod` laufen.
+
+Zusätzlich habe ich die Rollen einiger Framework-Bestandteile besser verstanden:
+- Tomcat nimmt HTTP-Requests entgegen.
+- Der DispatcherServlet verteilt Requests an passende Controller.
+- `@SpringBootTest` startet einen Spring ApplicationContext für Tests.
+- JUnit führt `@Test`-Methoden aus.
+- Maven baut das Projekt und startet u. a. die Tests.
+- Spring Beans sind von Spring erzeugte und verwaltete Objekte.
+- Dependency Injection bedeutet, dass Abhängigkeiten von außen übergeben werden, statt sie in der Klasse selbst zu erzeugen.
+
+Vorteil von Dependency Injection:
+Services sind weniger fest an konkrete Implementierungen gekoppelt. Dadurch können z. B. im Produktivbetrieb echte Repositories und im Unit-Test Mock-Repositories verwendet werden.
