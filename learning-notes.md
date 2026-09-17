@@ -665,3 +665,48 @@ lokalen Datenbank getrennt.
 Aktueller Stand:
 
 15 Tests, 0 Fehler.
+
+## Datenbankmigrationen mit Flyway
+
+Bisher wurde das Datenbankschema über:
+
+`spring.jpa.hibernate.ddl-auto=update`
+
+automatisch durch Hibernate angepasst.
+
+Für reproduzierbare Schemaänderungen wurde Flyway ergänzt.
+
+Eine erste Migration:
+
+`V1__create_schema.sql`
+
+erstellt die Tabellen `cases` und `comments` inklusive Foreign Key.
+
+Im Integrationstest wird Hibernate auf:
+
+`ddl-auto=validate`
+
+gestellt.
+
+Dadurch erstellt Hibernate das Schema nicht mehr selbst, sondern prüft nur,
+ob das von Flyway erzeugte Schema zu den Entities passt.
+
+Der Ablauf ist damit:
+
+PostgreSQL-Testcontainer
+
+→ Flyway führt Migrationen aus
+
+→ Hibernate validiert das Schema
+
+→ Integrationstest läuft
+
+Beim Einrichten traten zunächst Fehler auf, weil Flyway und die verschiedenen
+Test-Datenbanken nicht sauber voneinander getrennt waren.
+
+Dadurch wurde für mich sichtbar, dass Migrationen, Datasource-Konfiguration und
+Testumgebungen bewusst zusammenspielen müssen.
+
+Aktueller Stand:
+
+15 Tests, 0 Fehler.

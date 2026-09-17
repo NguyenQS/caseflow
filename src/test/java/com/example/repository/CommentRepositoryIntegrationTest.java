@@ -19,7 +19,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = {
+        "spring.jpa.hibernate.ddl-auto=validate",
+        "spring.flyway.enabled=true"
+})
 @Transactional
 class CommentRepositoryIntegrationTest {
 
