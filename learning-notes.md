@@ -710,3 +710,21 @@ Testumgebungen bewusst zusammenspielen müssen.
 Aktueller Stand:
 
 15 Tests, 0 Fehler.
+
+Als zweite Migration wurde:
+
+`V2__expand_comment_text.sql`
+
+ergänzt.
+
+Damit wurde die Spalte `comments.text` von `VARCHAR(255)` auf
+`VARCHAR(1000)` erweitert.
+
+Die Änderung war nötig, weil die API über `@Size(max = 1000)` bereits längere
+Comment-Texte erlaubt.
+
+Dadurch wurde praktisch sichtbar, dass bestehende Flyway-Migrationen nicht
+nachträglich geändert werden sollten.
+
+Statt `V1` umzuschreiben, wird jede weitere Schemaänderung als neue
+Migration ergänzt.
